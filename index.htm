@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Redeem Voucher</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            margin-bottom: 20px;
+        }
+
+        #voucherCode {
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            width: 200px;
+        }
+
+        #redeemButton {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #redeemButton:hover {
+            background-color: #45a049;
+        }
+
+        #errorMessage {
+            color: red;
+            margin-top: 10px;
+        }
+		
+		.settings-button {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+    
+        .settings-table {
+            display: none; /* Hidden by default */
+            position: absolute;
+            bottom: 50px; /* Adjusted to not overlap with the settings button */
+            left: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Placeholder for the image -->
+<img src="Uber.png" alt="Image Placeholder" />
+
+<!-- Redeem Voucher Section -->
+<div>
+    <!-- Text field for the voucher code -->
+    <label for="voucherCode">Do you have a voucher code? Paste it below to get your discount on your next ride!</label><br><br>
+    <input type="text" id="voucherCode" name="voucherCode"><br>
+
+    <!-- Button to redeem the voucher -->
+    <button id="redeemButton">Redeem Voucher</button>
+</div>
+
+<!-- Placeholder for error messages -->
+<div id="errorMessage"></div>
+
+<button id="settingsButton" class="settings-button">
+        <img src="cog-icon.png" alt="Settings" />
+</button>
+	
+<!-- Settings Table -->
+<div id="settingsTable" class="settings-table">
+    <table>
+        <tr>
+            <td><label for="offerId">Offer ID:</label></td>
+            <td><input type="text" id="offerId" class="table-input" value="123"></td>
+        </tr>
+        <tr>
+            <td><label for="orgName">Org Name:</label></td>
+            <td><input type="text" id="orgName" class="table-input" value="Uber"></td>
+        </tr>
+        <tr>
+            <td><label for="customerId">Customer ID:</label></td>
+            <td><input type="text" id="customerId" class="table-input" value="12345"></td>
+        </tr>
+    </table>
+</div>
+
+<script>
+    document.getElementById("redeemButton").onclick = function() {
+        var voucherCode = document.getElementById("voucherCode").value;
+		var offerId = document.getElementById("offerId").value;
+		var orgName = document.getElementById("orgName").value;
+		var TKID = document.getElementById("customerId").value;
+        var data = {
+            "offerId": offerId,
+            "orgName": orgName,
+            "TKID": TKID,
+            "voucherCode": voucherCode
+        };
+
+        fetch("https://adqura-csfs23.pegatsdemo.com/prweb/api/THY/1.0/redeemVoucher", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (!data.isSuccesful) {
+                document.getElementById("errorMessage").innerText = data.ErrorMessage;
+            } else {
+                document.getElementById("errorMessage").innerText = "Voucher redeemed successfully!";
+            }
+        })
+        .catch(error => {
+            console.error("Error:", error);
+        });
+    };
+	        // Toggle Settings Table
+
+	 document.getElementById("settingsButton").onclick = function() {
+            var settingsTable = document.getElementById("settingsTable");
+            settingsTable.style.display = settingsTable.style.display === "none" ? "block" : "none";
+        };
+</script>
+
+
+</body>
+</html>
